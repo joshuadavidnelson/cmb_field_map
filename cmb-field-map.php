@@ -20,7 +20,7 @@ function pw_map_field( $field, $meta ) {
 	wp_enqueue_script( 'pw_google_maps_init', PW_GOOGLE_MAPS_URL . 'js/script.js', array( 'pw_google_maps_api' ), null );
 	wp_enqueue_style( 'pw_google_maps_css', PW_GOOGLE_MAPS_URL . 'css/style.css', array(), null );
 
-	echo '<input type="text" class="map-search" id="' . $field['id'] . '" />';
+	echo '<input type="text" class="map-search" name="' . $field['id'] . '[address]" id="' . $field['id'] . '[address]" value="' . ( isset( $meta['address'] ) ? $meta['address'] : '' ) . '" />';
 	echo '<div class="map"></div>';
 	echo '<input type="hidden" class="latitude" name="' . $field['id'] . '[latitude]" value="' . ( isset( $meta['latitude'] ) ? $meta['latitude'] : '' ) . '" />';
 	echo '<input type="hidden" class="longitude" name="' . $field['id'] . '[longitude]" value="' . ( isset( $meta['longitude'] ) ? $meta['longitude'] : '' ) . '" />';
@@ -35,6 +35,7 @@ add_filter( 'cmb_render_pw_map', 'pw_map_field', 10, 2 );
 function pw_map_sanitise( $meta_value, $field ) {
 	$latitude = $meta_value['latitude'];
 	$longitude = $meta_value['longitude'];
+	$address = $meta_value['address'];
 
 	if ( ! empty( $latitude ) ) {
 		update_post_meta( get_the_ID(), $field['id'] . '_latitude', $latitude );
@@ -42,6 +43,10 @@ function pw_map_sanitise( $meta_value, $field ) {
 
 	if ( ! empty( $longitude ) ) {
 		update_post_meta( get_the_ID(), $field['id'] . '_longitude', $longitude );
+	}
+	
+	if( !empty( $address ) ) {
+		update_post_meta( get_the_ID(), $field['id'] . '_address', $address );
 	}
 
 	return $meta_value;
